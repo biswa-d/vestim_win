@@ -378,7 +378,23 @@ class FileOrganizer(QObject):
         self.progress.emit(progress_value)
 
 def main():
+    import sys
+    import os
+    
+    # Handle PyInstaller bundled execution
+    if getattr(sys, 'frozen', False):
+        # If bundled with PyInstaller, adjust the path
+        application_path = sys._MEIPASS
+        os.chdir(application_path)
+    
     app = QApplication(sys.argv)
+    
+    # Set application properties
+    app.setApplicationName("Vestim")
+    app.setApplicationDisplayName("Vestim - Voltage Estimation Tool")
+    app.setApplicationVersion("1.0.0")
+    app.setOrganizationName("Biswanath Dehury")
+    
     gui = DataImportGUI()
     gui.show()
     sys.exit(app.exec_())

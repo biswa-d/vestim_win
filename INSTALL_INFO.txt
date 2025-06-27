@@ -1,0 +1,38 @@
+Welcome to Vestim Setup
+======================
+
+Vestim is a Voltage Estimation Tool for Lithium-ion Batteries.
+
+What this installer will do:
+---------------------------
+
+1. Install Vestim application to your computer
+2. Create desktop shortcut (optional)
+3. Create Start Menu entry
+4. Set up file associations
+
+After installation:
+------------------
+
+• Click the Vestim desktop icon or Start Menu entry to launch
+• The application will ask you to select training and test data folders
+• Vestim will automatically create job folders to save your work
+• No additional setup required - everything is self-contained
+
+System Requirements:
+-------------------
+
+• Windows 10 or later (64-bit)
+• At least 2GB of free disk space
+• 4GB RAM recommended
+
+Supported Data Formats:
+----------------------
+
+• Arbin (.mat files)
+• STLA battery data
+• Digatron (.csv files)
+
+For support, contact: dehuryb@mcmaster.ca
+
+Click Next to continue with the installation.
