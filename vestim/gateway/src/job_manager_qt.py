@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from vestim.config import OUTPUT_DIR
+from vestim.config import get_output_dir
 from vestim.logger_config import configure_job_specific_logging # Import the new function
 import logging # Import logging to potentially log the action
 
@@ -19,7 +19,7 @@ class JobManager:
     def create_new_job(self):
         """Generates a new job ID based on the current timestamp and initializes job directories."""
         self.job_id = f"job_{datetime.now().strftime('%Y%m%d-%H%M%S')}"
-        job_folder = os.path.join(OUTPUT_DIR, self.job_id)
+        job_folder = os.path.join(get_output_dir(), self.job_id)
         os.makedirs(job_folder, exist_ok=True)
         
         # Configure logging to use a file within this new job folder
@@ -39,7 +39,7 @@ class JobManager:
     def get_job_folder(self):
         """Returns the path to the current job folder."""
         if self.job_id:
-            return os.path.join(OUTPUT_DIR, self.job_id)
+            return os.path.join(get_output_dir(), self.job_id)
         return None
     
     def get_train_folder(self):

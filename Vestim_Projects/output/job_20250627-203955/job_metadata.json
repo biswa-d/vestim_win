@@ -1,0 +1,16 @@
+{
+    "normalization_applied": true,
+    "scaler_path": "scalers\\augmentation_scaler.joblib",
+    "normalized_columns": [
+        "TimeStamp",
+        "Status",
+        "Voltage",
+        "Current",
+        "Ah",
+        "Wh",
+        "Power",
+        "Battery_Temp_degC",
+        "SOC"
+    ],
+    "scaler_stats_path": "scalers\\scaler_global_stats.json"
+}

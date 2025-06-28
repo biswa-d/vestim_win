@@ -33,6 +33,13 @@ class DataLoaderService:
         :param seed: Random seed for reproducibility.
         :return: A tuple of (train_loader, val_loader) PyTorch DataLoader objects.
         """
+        import sys
+        
+        # Disable multiprocessing for PyInstaller builds to prevent multiple GUI instances
+        if getattr(sys, 'frozen', False):
+            num_workers = 0
+            self.logger.info("PyInstaller detected: Disabling DataLoader multiprocessing (num_workers=0)")
+        
         if seed is None:
             seed = int(datetime.now().timestamp())
         

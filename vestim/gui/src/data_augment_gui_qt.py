@@ -33,8 +33,8 @@ from vestim.gateway.src.data_augment_manager_qt import DataAugmentManager
 import logging
 from vestim.logger_config import setup_logger
 
-# Set up initial logging to a default log file
-logger = setup_logger(log_file='data_augment.log')
+# Use standard logger instead of creating a separate log file
+logger = logging.getLogger(__name__)
 
 class FormulaInputDialog(QDialog):
     """Dialog for entering custom formulas to create new columns"""

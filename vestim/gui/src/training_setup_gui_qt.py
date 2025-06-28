@@ -76,8 +76,8 @@ class VEstimTrainSetupGUI(QWidget):
 
     def build_gui(self):
         self.setWindowTitle("VEstim - Setting Up Training")
-        self.setMinimumSize(900, 600)
-        self.setMaximumSize(900, 600)  # This makes it appear "fixed"
+        self.setMinimumSize(1200, 800)  # Increased minimum size
+        self.resize(1400, 900)  # Default size, but resizable
         
         # Main layout
         self.main_layout = QVBoxLayout()

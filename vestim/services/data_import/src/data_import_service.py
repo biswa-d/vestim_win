@@ -1,14 +1,11 @@
 import shutil
-from flask import Flask, request, jsonify
-import requests
 import sys
 import os
 
-from src.config import ROOT_DIR, OUTPUT_DIR  # Import the ROOT_DIR from config
-from src.gateway.src.job_manager import JobManager
+from vestim.config import get_root_dir, get_output_dir  # Import the dynamic functions from config
+from vestim.gateway.src.job_manager_qt import JobManager
 
-app = Flask(__name__)
-
+# Flask-related code removed as it's not used in the main application
 job_manager = JobManager()
 
 @app.route('/upload', methods=['POST'])
@@ -75,4 +72,5 @@ def upload_files():
         return jsonify({"message": "Failed to convert files"}), 500
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    print("Data import service - Flask API not implemented in current version")
+    print("Use the GUI application for data import functionality")

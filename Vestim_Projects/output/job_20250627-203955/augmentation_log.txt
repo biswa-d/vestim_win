@@ -1,0 +1,18 @@
+--- Data Augmentation Process --- Job ID: job_20250627-203955 ---
+Augmentation Run Date: 2025-06-27 20:40:02
+
+Total files processed: 2
+
+--- Processed File Details ---
+File 1:
+  Path: D:\Code\Vestim\vestim_micros\Vestim_Projects\output\job_20250627-203955\train_data\processed_data\109_Mixed1_n20C.csv
+  Original Shape (rows, cols): (75492, 10)
+  Augmented Shape (rows, cols): (75492, 10)
+  Final Columns: TimeStamp, Status, Voltage, Current, Ah, Wh, Power, Battery_Temp_degC, Time, SOC
+
+File 2:
+  Path: D:\Code\Vestim\vestim_micros\Vestim_Projects\output\job_20250627-203955\test_data\processed_data\105_UDDS_n20C.csv
+  Original Shape (rows, cols): (105614, 10)
+  Augmented Shape (rows, cols): (105614, 10)
+  Final Columns: TimeStamp, Status, Voltage, Current, Ah, Wh, Power, Battery_Temp_degC, Time, SOC
+

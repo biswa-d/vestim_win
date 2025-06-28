@@ -25,7 +25,7 @@ def build_executable():
         main_script,
         '--name=Vestim',
         '--onefile',  # Create single executable
-        '--windowed',  # Hide console window
+        '--console',  # Show console window for debugging (change to --windowed to hide)
         '--add-data=vestim;vestim',  # Include entire vestim package
         '--add-data=hyperparams.json;.',  # Include config files
         '--hidden-import=PyQt5.QtCore',

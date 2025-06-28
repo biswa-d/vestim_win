@@ -10,7 +10,7 @@ import matplotlib.ticker as ticker
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from queue import Queue, Empty
 from threading import Thread
-import logging, wandb
+import logging
 import os
 import matplotlib.pyplot as plt
 
@@ -48,18 +48,6 @@ class VEstimTrainingTaskGUI(QMainWindow):
         
         #Logger setup
         self.logger = logging.getLogger(__name__)
-        # Initialize WandB flag
-        self.use_wandb = False  # Set to False if WandB should not be used
-        self.wandb_enabled = False
-        if self.use_wandb:
-            try:
-                import wandb
-                wandb.init(project="VEstim", config={"task_name": "LSTM Model Training"})
-                self.wandb_enabled = True
-            except Exception as e:
-                self.wandb_enabled = False
-                self.logger.error(f"Failed to initialize WandB in GUI: {e}")
-        
 
         self.task_list = task_list
         self.params = params # Assign to self.params first
@@ -798,6 +786,11 @@ class VEstimTrainingTaskGUI(QMainWindow):
 
 if __name__ == "__main__":
     import sys
+    import multiprocessing
+    
+    # Essential for PyInstaller multiprocessing support
+    multiprocessing.freeze_support()
+    
     app = QApplication(sys.argv)
     task_list = []  # Replace with actual task list
     params = {}  # Replace with actual parameters

@@ -1,0 +1,36 @@
+{
+    "comment": "Global min/max statistics used for scaler 'augmentation_scaler.joblib' on job 'job_20250627-203955'",
+    "normalized_columns_for_stats": [
+        "TimeStamp",
+        "Status",
+        "Voltage",
+        "Current",
+        "Ah",
+        "Wh",
+        "Power",
+        "Battery_Temp_degC",
+        "SOC"
+    ],
+    "global_min": {
+        "TimeStamp": NaN,
+        "Status": NaN,
+        "Voltage": 2.8392,
+        "Current": -90.3509,
+        "Ah": -49.2481,
+        "Wh": 155.0,
+        "Power": -263.77046689,
+        "Battery_Temp_degC": -19.363,
+        "SOC": 0.1765335242119026
+    },
+    "global_max": {
+        "TimeStamp": NaN,
+        "Status": NaN,
+        "Voltage": 4.2008,
+        "Current": 64.9916,
+        "Ah": -0.0001,
+        "Wh": 156.0,
+        "Power": 271.2016618,
+        "Battery_Temp_degC": 25.677,
+        "SOC": 0.9999983279223448
+    }
+}

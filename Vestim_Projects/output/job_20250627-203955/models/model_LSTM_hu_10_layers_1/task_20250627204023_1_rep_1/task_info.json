@@ -1,0 +1,81 @@
+{
+    "task_id": "task_20250627204023_1_rep_1",
+    "model_dir": "D:\\Code\\Vestim\\vestim_micros\\Vestim_Projects\\output\\job_20250627-203955\\models\\model_LSTM_hu_10_layers_1\\task_20250627204023_1_rep_1",
+    "task_dir": "D:\\Code\\Vestim\\vestim_micros\\Vestim_Projects\\output\\job_20250627-203955\\models\\model_LSTM_hu_10_layers_1\\task_20250627204023_1_rep_1",
+    "model_path": "D:\\Code\\Vestim\\vestim_micros\\Vestim_Projects\\output\\job_20250627-203955\\models\\model_LSTM_hu_10_layers_1\\task_20250627204023_1_rep_1\\model.pth",
+    "logs_dir": "D:\\Code\\Vestim\\vestim_micros\\Vestim_Projects\\output\\job_20250627-203955\\models\\model_LSTM_hu_10_layers_1\\task_20250627204023_1_rep_1\\logs",
+    "model_metadata": {
+        "model_type": "LSTM",
+        "num_learnable_params": 571,
+        "hidden_units": 10,
+        "num_layers": 1,
+        "input_size": 3,
+        "output_size": 1
+    },
+    "hyperparams": {
+        "LAYERS": 1,
+        "HIDDEN_UNITS": 10,
+        "INPUT_SIZE": 3,
+        "OUTPUT_SIZE": 1,
+        "BATCH_TRAINING": true,
+        "BATCH_SIZE": 100,
+        "MAX_EPOCHS": 2,
+        "INITIAL_LR": 0.0001,
+        "VALID_PATIENCE": 10,
+        "ValidFrequency": 1,
+        "LOOKBACK": 400,
+        "SCHEDULER_TYPE": "StepLR",
+        "LR_PERIOD": 1,
+        "LR_PARAM": 0.1,
+        "PLATEAU_PATIENCE": null,
+        "PLATEAU_FACTOR": null,
+        "REPETITIONS": 1,
+        "NUM_LEARNABLE_PARAMS": 571
+    },
+    "data_loader_params": {
+        "lookback": 400,
+        "batch_size": 100,
+        "feature_columns": [
+            "Battery_Temp_degC",
+            "SOC",
+            "Power"
+        ],
+        "target_column": "Voltage",
+        "train_val_split": 0.8,
+        "num_workers": 4
+    },
+    "training_params": {
+        "early_stopping": true,
+        "early_stopping_patience": 10,
+        "save_best_model": true,
+        "checkpoint_dir": "D:\\Code\\Vestim\\vestim_micros\\Vestim_Projects\\output\\job_20250627-203955\\models\\model_LSTM_hu_10_layers_1\\task_20250627204023_1_rep_1\\logs\\checkpoints",
+        "best_model_path": "D:\\Code\\Vestim\\vestim_micros\\Vestim_Projects\\output\\job_20250627-203955\\models\\model_LSTM_hu_10_layers_1\\task_20250627204023_1_rep_1\\best_model.pth",
+        "max_training_time_seconds": 1800
+    },
+    "results": {
+        "best_val_loss": Infinity,
+        "best_epoch": 0,
+        "training_time": 0,
+        "early_stopped": false,
+        "completed": false
+    },
+    "csv_log_file": "D:\\Code\\Vestim\\vestim_micros\\Vestim_Projects\\output\\job_20250627-203955\\models\\model_LSTM_hu_10_layers_1\\task_20250627204023_1_rep_1\\logs\\training_progress.csv",
+    "db_log_file": "D:\\Code\\Vestim\\vestim_micros\\Vestim_Projects\\output\\job_20250627-203955\\models\\model_LSTM_hu_10_layers_1\\task_20250627204023_1_rep_1\\logs\\task_20250627204023_1_rep_1_training.db",
+    "job_metadata": {
+        "normalization_applied": true,
+        "scaler_path": "scalers\\augmentation_scaler.joblib",
+        "normalized_columns": [
+            "TimeStamp",
+            "Status",
+            "Voltage",
+            "Current",
+            "Ah",
+            "Wh",
+            "Power",
+            "Battery_Temp_degC",
+            "SOC"
+        ],
+        "scaler_stats_path": "scalers\\scaler_global_stats.json"
+    },
+    "job_folder_augmented_from": "D:\\Code\\Vestim\\vestim_micros\\Vestim_Projects\\output\\job_20250627-203955"
+}

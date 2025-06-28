@@ -31,8 +31,8 @@ from vestim.gateway.src.job_manager_qt import JobManager # Corrected import
 from vestim.services import normalization_service # Added for normalization
 import pandas as pd # Added for pd.api.types
 
-# Set up logging
-logger = setup_logger(log_file='data_augment_manager.log')
+# Use standard logger instead of creating a separate log file
+logger = logging.getLogger(__name__)
 
 DEFAULT_NORM_EXCLUDE_COLS = ['time', 'Time', 'timestamp', 'Timestamp', 'datetime', 'Epoch', 'Cycle_Index', 'Step_Index', 'File_Index']
 

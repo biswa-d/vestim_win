@@ -27,8 +27,8 @@ from vestim.services.data_processor.src.data_processor_qt_digatron import DataPr
 import logging
 
 from vestim.logger_config import setup_logger  # Assuming you have logger_config.py as shared earlier
-# Set up initial logging to a default log file
-logger = setup_logger(log_file='default.log')  # Log everything to 'default.log' initially
+# Use standard logger - will be properly configured in main()
+logger = logging.getLogger(__name__)
 
 DEFAULT_DATA_EXTENSIONS = [".csv", ".txt", ".mat", ".xls", ".xlsx", ".RES"] # Added .RES for Biologic, expand as needed
 
@@ -53,7 +53,7 @@ class DataImportGUI(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle("VEstim Modelling Tool")
-        self.setGeometry(100, 100, 900, 600)
+        self.setGeometry(100, 100, 1200, 800)  # Increased from 900x600 to 1200x800
 
         # Main layout
         self.central_widget = QWidget(self)
@@ -380,12 +380,39 @@ class FileOrganizer(QObject):
 def main():
     import sys
     import os
+    import multiprocessing
+    from pathlib import Path
     
-    # Handle PyInstaller bundled execution
+    # Essential for PyInstaller multiprocessing support
+    multiprocessing.freeze_support()
+    
+    # Handle PyInstaller bundled execution and set working directory
     if getattr(sys, 'frozen', False):
-        # If bundled with PyInstaller, adjust the path
-        application_path = sys._MEIPASS
-        os.chdir(application_path)
+        # If bundled with PyInstaller, use the .exe directory as base
+        exe_dir = Path(sys.executable).parent
+        project_dir = exe_dir / "Vestim_Projects"
+    else:
+        # If running from source, use the project root
+        source_dir = Path(__file__).parent.parent.parent.parent
+        project_dir = source_dir / "Vestim_Projects"
+    
+    # Create project directory if it doesn't exist
+    project_dir.mkdir(exist_ok=True)
+    
+    # Change working directory to project directory
+    os.chdir(project_dir)
+    
+    # Set up logging to project directory
+    log_dir = project_dir / "logs"
+    log_dir.mkdir(exist_ok=True)
+    
+    # Update logger to use project directory
+    global logger
+    from vestim.logger_config import setup_logger
+    logger = setup_logger(log_file=str(log_dir / 'vestim.log'))
+    
+    logger.info(f"Vestim started. Project directory: {project_dir}")
+    logger.info(f"Working directory set to: {os.getcwd()}")
     
     app = QApplication(sys.argv)
     
@@ -394,6 +421,15 @@ def main():
     app.setApplicationDisplayName("Vestim - Voltage Estimation Tool")
     app.setApplicationVersion("1.0.0")
     app.setOrganizationName("Biswanath Dehury")
+    
+    # Show startup message
+    from PyQt5.QtWidgets import QMessageBox
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Information)
+    msg.setWindowTitle("Vestim")
+    msg.setText(f"Welcome to Vestim!\n\nProject directory: {project_dir}\nLogs will be saved to: {log_dir}")
+    msg.setStandardButtons(QMessageBox.Ok)
+    msg.exec_()
     
     gui = DataImportGUI()
     gui.show()

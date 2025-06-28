@@ -1,0 +1,4 @@
+Training completed
+Best validation loss: 0.025447
+Final learning rate: 0.00000100
+Stopped at epoch: 2/2
