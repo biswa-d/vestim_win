@@ -58,3 +58,13 @@ tzdata==2024.1
 urllib3==2.2.2
 h5py==3.11.0
 nvidia-ml-py3==7.352.0
+
+# Remote SSH dependencies
+paramiko>=3.4.0
+keyring>=24.0.0
+pywin32>=306; sys_platform == "win32"
+winshell>=0.6; sys_platform == "win32"
+
+# Remote connection dependencies
+paramiko>=2.7.0
+scp>=0.13.0

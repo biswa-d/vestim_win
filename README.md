@@ -28,7 +28,18 @@ Vestim is a comprehensive tool for voltage estimation in lithium-ion batteries, 
    - **Windows**: `scripts\vestim.bat`
    - **Linux/macOS**: `scripts/vestim.sh`
 
-### Option 2: Manual Installation (For Developers)
+### Option 2: Vestim Server Client (Remote Access)
+
+For users who need to access Vestim running on a remote server:
+
+1. Install Vestim normally (Option 1)
+2. During installation, check "Run server setup wizard after installation"
+3. Configure your remote server details (hostname, credentials, Vestim path)
+4. Use the "Vestim Server" shortcut for one-click remote access
+
+This enables seamless access to Vestim running on powerful remote servers with GUI display on your local machine. See [VESTIM_SERVER_CLIENT.md](VESTIM_SERVER_CLIENT.md) for detailed setup instructions.
+
+### Option 3: Manual Installation (For Developers)
 
 ```bash
 # Clone the repository
