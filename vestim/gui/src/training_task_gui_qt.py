@@ -62,6 +62,7 @@ class VEstimTrainingTaskGUI(QMainWindow):
         self.valid_loss_values = []
         self.valid_x_values = []
         self.start_time = None
+        self.total_training_start_time = None  # Track total training time across all tasks
         self.queue = Queue()
         self.timer_running = True
         self.training_process_stopped = False
@@ -308,7 +309,7 @@ class VEstimTrainingTaskGUI(QMainWindow):
 
         # Time tracking label (move it just below the title)
         time_layout = QHBoxLayout()
-        self.static_text_label = QLabel("Current Task Time:") # Changed label
+        self.static_text_label = QLabel(f"Task {self.current_task_index + 1} Time:") # Show current task number
         self.static_text_label.setStyleSheet("color: blue; font-size: 10pt;")
         self.time_value_label = QLabel("00h:00m:00s")
         self.time_value_label.setStyleSheet("color: purple; font-size: 11pt; font-weight: bold;")
@@ -413,6 +414,11 @@ class VEstimTrainingTaskGUI(QMainWindow):
 
         # Start processing tasks sequentially
         self.start_time = time.time()
+        
+        # Initialize total training time tracking on the first task
+        if self.current_task_index == 0:
+            self.total_training_start_time = self.start_time
+        
         self.clear_plot()
 
         # Start the training task in a background thread
@@ -710,15 +716,16 @@ class VEstimTrainingTaskGUI(QMainWindow):
             print(f"Failed to save training history plot: {str(e)}")
 
         if self.isVisible():  # Check if the window still exists
-            total_training_time = time.time() - self.start_time
-            total_hours, total_remainder = divmod(total_training_time, 3600)
-            total_minutes, total_seconds = divmod(total_remainder, 60)
-            formatted_total_time = f"{int(total_hours):02}h:{int(total_minutes):02}m:{int(total_seconds):02}s"
+            # Calculate current task time
+            current_task_time = time.time() - self.start_time
+            current_hours, current_remainder = divmod(current_task_time, 3600)
+            current_minutes, current_seconds = divmod(current_remainder, 60)
+            formatted_current_time = f"{int(current_hours):02}h:{int(current_minutes):02}m:{int(current_seconds):02}s"
 
-            # Update time label
-            self.static_text_label.setText("Total Training Time:")
+            # Update time label for current task
+            self.static_text_label.setText(f"Task {self.current_task_index + 1} Time:")
             self.static_text_label.setStyleSheet("color: blue; font-size: 12pt; font-weight: bold;")
-            self.time_value_label.setText(formatted_total_time)
+            self.time_value_label.setText(formatted_current_time)
             self.time_value_label.setStyleSheet("color: purple; font-size: 12pt; font-weight: bold;")
 
             # Check if the training process was stopped early
@@ -742,17 +749,28 @@ class VEstimTrainingTaskGUI(QMainWindow):
             print(f"Completed task {self.current_task_index + 1}/{len(self.task_list)}.")
             self.current_task_index += 1
             self.task_completed_flag = False  # Reset the flag for the next task
+            
+            # Reset timer and start time for next task
+            self.timer_running = True
+            self.start_time = time.time()  # Reset start time for the new task
+            
             self.build_gui(self.task_list[self.current_task_index])
             self.start_task_processing()
         else:
             # Handle the case when all tasks are completed
-            total_training_time = time.time() - self.start_time
+            # Clean up dataloaders from training task manager
+            self.training_task_manager.cleanup_dataloaders()
+            
+            # Calculate total training time across all tasks
+            total_training_time = time.time() - self.total_training_start_time
             total_hours, total_remainder = divmod(total_training_time, 3600)
             total_minutes, total_seconds = divmod(total_remainder, 60)
             formatted_total_time = f"{int(total_hours):02}h:{int(total_minutes):02}m:{int(total_seconds):02}s"
 
             self.static_text_label.setText("Total Training Time:")
+            self.static_text_label.setStyleSheet("color: green; font-size: 12pt; font-weight: bold;")
             self.time_value_label.setText(formatted_total_time)
+            self.time_value_label.setStyleSheet("color: green; font-size: 12pt; font-weight: bold;")
 
             self.status_label.setText("All Training Tasks Completed!")
             self.show_proceed_to_testing_button()

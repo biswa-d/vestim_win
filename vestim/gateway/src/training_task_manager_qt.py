@@ -1,7 +1,10 @@
-import time, os, sys, math, json # Added json
+import time, os, sys, math, json, gc
 import csv
 import sqlite3
 import torch
+import psutil
+import pandas as pd
+import numpy as np
 from PyQt5.QtCore import QThread, pyqtSignal
 from vestim.gateway.src.job_manager_qt import JobManager
 from vestim.gateway.src.training_setup_manager_qt import VEstimTrainingSetupManager
@@ -56,6 +59,26 @@ class TrainingTaskManager:
 
         self.training_thread = None  # Initialize the training thread here for PyQt
 
+    def cleanup_dataloaders(self):
+        """Clean up previous dataloaders to free memory."""
+        
+        if hasattr(self, 'train_loader') and self.train_loader is not None:
+            self.logger.info("Cleaning up previous train dataloader")
+            del self.train_loader
+            self.train_loader = None
+            
+        if hasattr(self, 'val_loader') and self.val_loader is not None:
+            self.logger.info("Cleaning up previous validation dataloader")
+            del self.val_loader
+            self.val_loader = None
+            
+        # Force garbage collection to free memory
+        gc.collect()
+        
+        # Log memory usage after cleanup
+        memory_usage = psutil.virtual_memory().used / (1024**3)  # GB
+        self.logger.info(f"Memory usage after dataloader cleanup: {memory_usage:.2f} GB")
+
     def log_to_csv(self, task, epoch, train_loss, val_loss, elapsed_time, current_lr, best_val_loss, delta_t_epoch):
         """Log richer data to CSV file."""
         csv_log_file = task['csv_log_file']  # Fetch the csv log file path from the task
@@ -91,6 +114,9 @@ class TrainingTaskManager:
     def process_task(self, task, update_progress_callback):
         """Process a single training task and set up logging."""
         try:
+            # Clean up any previous dataloaders before creating new ones
+            self.cleanup_dataloaders()
+            
             # Concise log for starting task
             h_params_summary = {
                 k: task['hyperparams'].get(k) for k in ['MODEL_TYPE', 'LAYERS', 'HIDDEN_UNITS', 'MAX_EPOCHS', 'INITIAL_LR', 'BATCH_SIZE', 'LOOKBACK'] if k in task['hyperparams']
@@ -117,8 +143,17 @@ class TrainingTaskManager:
 
             # Create data loaders for the task
             train_loader, val_loader = self.create_data_loaders(task)
+            
+            # Store references to the current dataloaders for cleanup
+            self.train_loader = train_loader
+            self.val_loader = val_loader
+            
             self.logger.info(f"DataLoaders configured for task_id: {task.get('task_id', 'N/A')}")
             print(f" dataloader size, Train: {len(train_loader)} | Validation: {len(val_loader)}")
+
+            # Log memory usage after dataloader creation
+            memory_usage = psutil.virtual_memory().used / (1024**3)  # GB
+            self.logger.info(f"Memory usage after dataloader creation: {memory_usage:.2f} GB")
 
             # Update progress for starting training
             update_progress_callback.emit({'status': f'Training LSTM model for {task["hyperparams"]["MAX_EPOCHS"]} epochs...'})
@@ -129,6 +164,9 @@ class TrainingTaskManager:
         except Exception as e:
             self.logger.error(f"Error during task processing: {str(e)}")
             update_progress_callback.emit({'task_error': str(e)})
+        finally:
+            # Always clean up dataloaders when task processing is complete
+            self.cleanup_dataloaders()
 
     def setup_job_logging(self, task):
         """
@@ -494,8 +532,8 @@ class TrainingTaskManager:
 
                     if self.loaded_scaler and target_col_for_scaler in self.scaler_metadata.get('normalized_columns', []):
                         from vestim.services import normalization_service # Local import
-                        import pandas as pd # Local import for DataFrame
-                        import numpy as np # Ensure numpy is imported
+                        # Local import for DataFrame
+                        # Ensure numpy is imported
 
                         # --- Train RMSE on original scale (if epoch_train_preds_norm available) ---
                         if epoch_train_preds_norm is not None and epoch_train_trues_norm is not None and len(epoch_train_preds_norm) > 0:
@@ -664,8 +702,7 @@ class TrainingTaskManager:
                         if self.loaded_scaler and target_column_no_val in self.scaler_metadata.get('normalized_columns', []):
                             if epoch_train_preds_norm is not None and epoch_train_trues_norm is not None and len(epoch_train_preds_norm) > 0:
                                 try:
-                                    import pandas as pd 
-                                    import numpy as np
+                                    from vestim.services import normalization_service 
                                     from vestim.services import normalization_service 
                                     e_t_p_n_cpu_no_val = epoch_train_preds_norm.cpu().numpy() if epoch_train_preds_norm.is_cuda else epoch_train_preds_norm.numpy()
                                     e_t_t_n_cpu_no_val = epoch_train_trues_norm.cpu().numpy() if epoch_train_trues_norm.is_cuda else epoch_train_trues_norm.numpy()
@@ -750,8 +787,6 @@ class TrainingTaskManager:
                             if epoch_train_preds_norm is not None and epoch_train_trues_norm is not None and len(epoch_train_preds_norm) > 0:
                                 try:
                                     # Ensure pandas and numpy are available
-                                    import pandas as pd 
-                                    import numpy as np
                                     from vestim.services import normalization_service 
                                     e_t_p_n_cpu_no_val = epoch_train_preds_norm.cpu().numpy() if epoch_train_preds_norm.is_cuda else epoch_train_preds_norm.numpy()
                                     e_t_t_n_cpu_no_val = epoch_train_trues_norm.cpu().numpy() if epoch_train_trues_norm.is_cuda else epoch_train_trues_norm.numpy()
@@ -808,7 +843,7 @@ class TrainingTaskManager:
                         #     task=task, epoch=epoch, train_loss=train_loss_norm,
                         #     val_loss=float('nan'),
                         #     best_val_loss=best_validation_loss,
-                        #     elapsed_time=time.time() - start_time,
+                        #     elapsed_time=elapsed_time,
                         #     avg_batch_time=avg_batch_time, early_stopping=False,
                         #     model_memory_usage=round(model_memory_usage_mb, 3), current_lr=current_lr
                         # )
